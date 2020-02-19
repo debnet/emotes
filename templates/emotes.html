@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Emotes</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <style>
+        label.active .fa-check-square { display: inline; }
+        label.active .fa-square { display: none; }
+        label:not(.active) .fa-check-square { display: none; }
+        label:not(.active) .fa-square { display: inline; }
+    </style>
+</head>
+<body>
+    {% if message %}
+    <div class="alert alert-{{ message.level }}" role="alert">{{ message.message }}</div>
+    {% endif %}
+    <form method="post" action="">
+    <table class="table">
+        {% for name, emote in emotes %}
+        <tr id="{{ emote.ident }}">
+            <td scope="row" style="width:0">
+                <img data-toggle="tooltip" data-placement="top" title="{{ name }}"
+                     src="{{ url_for('static', filename=name) }}" width="50" height="50" />
+            </td>
+            {% if stats %}
+            {% with stats=emote.stats %}
+            <td scope="row" class="align-middle" style="width:0">
+                <strong>{{ stats.score }}</strong>
+            </td>
+            <td scope="row" class="align-middle">
+                <div class="progress" style="height:25px">
+                    <div class="progress-bar progress-bar-striped bg-primary" role="progressbar"
+                         data-toggle="tooltip" data-placement="top" title="Souvent"
+                         style="width: {{ stats.rate_3 }}%" aria-valuenow="{{ stats.rate_3 }}"
+                         aria-valuemin="0" aria-valuemax="100">
+                        <span>{{ emote.vote_3 }}</span>
+                    </div>
+                    <div class="progress-bar progress-bar-striped bg-success" role="progressbar"
+                         data-toggle="tooltip" data-placement="top" title="Occasionnel"
+                         style="width: {{ stats.rate_2 }}%" aria-valuenow="{{ stats.rate_2 }}"
+                         aria-valuemin="0" aria-valuemax="100">
+                        <span>{{ emote.vote_2 }}</span>
+                    </div>
+                    <div class="progress-bar progress-bar-striped bg-warning" role="progressbar"
+                         data-toggle="tooltip" data-placement="top" title="Exceptionnel"
+                         style="width: {{ stats.rate_1 }}%" aria-valuenow="{{ stats.rate_1 }}"
+                         aria-valuemin="0" aria-valuemax="100">
+                        <span>{{ emote.vote_1 }}</span>
+                    </div>
+                    <div class="progress-bar progress-bar-striped bg-danger" role="progressbar"
+                         data-toggle="tooltip" data-placement="top" title="Jamais"
+                         style="width: {{ stats.rate_0 }}%" aria-valuenow="{{ stats.rate_0 }}"
+                         aria-valuemin="0" aria-valuemax="100">
+                        <span>{{ emote.vote_0 }}</span>
+                    </div>
+                </div>
+            </td>
+            {% endwith %}
+            {% else %}
+            <td scope="row" class="align-middle">
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <label class="btn btn-primary active">
+                        <input type="radio" name="{{ name }}" value="3" id="{{ emote.ident }}-3"
+                               autocomplete="off" {% if request.form.get(name) == '3' %}checked{% endif %}>
+                        <i class="far fa-square"></i>
+                        <i class="far fa-check-square"></i>
+                        <span>Souvent</span>
+                    </label>
+                    <label class="btn btn-success active">
+                        <input type="radio" name="{{ name }}" value="2" id="{{ emote.ident }}-2"
+                               autocomplete="off" {% if request.form.get(name) == '2' %}checked{% endif %}>
+                        <i class="far fa-square"></i>
+                        <i class="far fa-check-square"></i>
+                        <span>Occasionnel</span>
+                    </label>
+                    <label class="btn btn-warning active">
+                        <input type="radio" name="{{ name }}" value="1" id="{{ emote.ident }}-1"
+                               autocomplete="off" {% if request.form.get(name) == '1' %}checked{% endif %}>
+                        <i class="far fa-square"></i>
+                        <i class="far fa-check-square"></i>
+                        <span>Exceptionnel</span>
+                    </label>
+                    <label class="btn btn-danger active">
+                        <input type="radio" name="{{ name }}" value="0" id="{{ emote.ident }}-0"
+                               autocomplete="off" {% if request.form.get(name) == '0' %}checked{% endif %}>
+                        <i class="far fa-square"></i>
+                        <i class="far fa-check-square"></i>
+                        <span>Jamais</span>
+                    </label>
+                </div>
+            </td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </table>
+    {% if not stats %}
+    <button type="submit" class="btn btn-secondary">
+        <i class="fa fa-check-circle"></i>
+        <span>Valider</span>
+    </button>
+    {% endif %}
+    </form>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+            integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+            integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/js/all.min.js"></script>
+    <script type="application/javascript">
+        $('[title]').tooltip();
+        $('input[checked]').parents('tr').addClass('alert-danger');
+        $('input').change(function(e) { $(e.target).parents('tr').addClass('alert-danger'); });
+    </script>
+</body>
+</html>
