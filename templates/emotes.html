@@ -19,7 +19,7 @@
         <i class="fa fa-thumbs-up"></i>
         <span>Merci pour votre participation !</span>
     </div>
-    {% else %}
+    {% elif 'results' not in request.args %}
     <div class="alert alert-danger" role="alert">
         <i class="fa fa-exclamation-triangle"></i>
         <span>Vous devez voter pour <strong>toutes</strong> les emotes.</span>
