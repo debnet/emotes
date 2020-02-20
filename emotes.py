@@ -82,7 +82,7 @@ def main():
                     emote.set(value)
                 Emote.bulk_update(emotes.values(), fields=('vote_0', 'vote_1', 'vote_2', 'vote_3'), batch_size=100)
             return redirect('/?thanks')
-    if 'stats' in request.args:
+    if 'results' in request.args:
         emotes = sorted(emotes.items(), key=lambda e: -e[1].score)
     else:
         emotes = list(emotes.items())
