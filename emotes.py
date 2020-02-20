@@ -7,7 +7,7 @@ from flask import Flask, render_template, redirect, request
 
 DATABASE = 'emotes.db'
 SCORE_0, SCORE_1, SCORE_2, SCORE_3 = 0, 1, 2, 3
-app = Flask(__name__)
+app = application = Flask(__name__)
 db = peewee.SqliteDatabase(DATABASE)
 Message = namedtuple('Message', ('message', 'level'))
 Stats = namedtuple('Stats', ('name', 'total', 'score', 'rate_0', 'rate_1', 'rate_2', 'rate_3'))
@@ -81,7 +81,7 @@ def main():
                         continue
                     emote.set(value)
                 Emote.bulk_update(emotes.values(), fields=('vote_0', 'vote_1', 'vote_2', 'vote_3'), batch_size=100)
-            return redirect('/?stats')
+            return redirect('/?thanks')
     if 'stats' in request.args:
         emotes = sorted(emotes.items(), key=lambda e: -e[1].score)
     else:
