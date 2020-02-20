@@ -14,8 +14,16 @@
     </style>
 </head>
 <body>
-    {% if message %}
-    <div class="alert alert-{{ message.level }}" role="alert">{{ message.message }}</div>
+    {% if 'stats' in request.args %}
+    <div class="alert alert-success" role="alert">
+        <i class="fa fa-thumbs-up"></i>
+        <span>Merci pour votre participation !</span>
+    </div>
+    {% else %}
+    <div class="alert alert-danger" role="alert">
+        <i class="fa fa-exclamation-triangle"></i>
+        <span>Vous devez voter pour <strong>toutes</strong> les emotes.</span>
+    </div>
     {% endif %}
     <form method="post" action="">
     <table class="table">
@@ -25,7 +33,7 @@
                 <img data-toggle="tooltip" data-placement="top" title="{{ name }}"
                      src="{{ url_for('static', filename=name) }}" width="50" height="50" />
             </td>
-            {% if stats %}
+            {% if 'stats' in request.args %}
             {% with stats=emote.stats %}
             <td scope="row" class="align-middle" style="width:0">
                 <strong>{{ stats.score }}</strong>
@@ -96,7 +104,7 @@
         </tr>
         {% endfor %}
     </table>
-    {% if not stats %}
+    {% if 'stats' not in request.args %}
     <button type="submit" class="btn btn-secondary">
         <i class="fa fa-check-circle"></i>
         <span>Valider</span>

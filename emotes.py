@@ -72,11 +72,8 @@ if old_emotes:
 def main():
     emotes = Emote.select().order_by(Emote.name.asc())
     emotes = {emote.name: emote for emote in emotes}
-    message, stats = None, 'stats' in request.args
     if request.method == 'POST':
-        if len(request.form) != len(emotes):
-            message = Message("Vous devez voter pour l'intégralité des emotes.", 'danger')
-        else:
+        if len(request.form) == len(emotes):
             with db.atomic():
                 for name, value in request.form.items():
                     emote = emotes.get(name)
@@ -85,10 +82,9 @@ def main():
                     emote.set(value)
                 Emote.bulk_update(emotes.values(), fields=('vote_0', 'vote_1', 'vote_2', 'vote_3'), batch_size=100)
             return redirect('/?stats')
-    if stats:
-        message = Message("Merci pour votre participation !", 'success')
+    if 'stats' in request.args:
         emotes = sorted(emotes.items(), key=lambda e: -e[1].score)
     else:
         emotes = list(emotes.items())
         random.shuffle(emotes)
-    return render_template('emotes.html', emotes=emotes, message=message, stats=stats)
+    return render_template('emotes.html', emotes=emotes)
